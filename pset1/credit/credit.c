@@ -7,6 +7,7 @@ void validate(string content);
 bool card_check(long card_number);
 bool luhn_check(long card_number);
 bool INNRange(long number, long start_range, long end_range);
+bool EXACT(long number, long exact);
 long get_digit_count(long number);
 long get_digit_at(long place, long number);
 string card_type(long card_number);
@@ -70,7 +71,9 @@ bool card_check(long card_number)
     }
     else
     {
+
         printf("INVALID\n");
+
     }
 
     return valid;
@@ -82,27 +85,78 @@ string card_type(long card_number)
     string type;
 
     long digit_count = get_digit_count(card_number);
-    long first_digit = get_digit_at(1, card_number);
-    long second_digit = get_digit_at(2, card_number);
-
-    if (digit_count == 15 && (first_digit == 3 && (second_digit == 4 || second_digit == 7)))
+    if (digit_count == 15 && (EXACT(card_number, 34) || EXACT(card_number, 37)))
     {
 
         type = "AMEX";
 
     }
-    else if (digit_count == 16 && ((first_digit == 5 && (second_digit == 1 || second_digit == 2 || second_digit == 3
-                                   || second_digit == 4 || second_digit == 5)) || INNRange(card_number, 222100, 272099)))
+    else if (digit_count == 14 && EXACT(card_number, 36))
+    {
+
+        type = "DINERS INTL";
+
+    }
+    else if (digit_count == 14 && (INNRange(card_number, 300, 305)) )
+    {
+
+        type = "DINERS CARTE BLANCHE";
+
+    }
+    else if ( digit_count == 16 && EXACT(card_number, 54) )
+    {
+
+        type = "DINERS US/CA";
+
+    }
+    else if (digit_count == 16 && ( EXACT(card_number, 51) || EXACT(card_number, 52) || EXACT(card_number, 53)
+                                   || EXACT(card_number, 54) || EXACT(card_number, 55) || INNRange(card_number, 222100, 272099) ))
     {
 
         type = "MASTERCARD";
 
     }
-    else if (digit_count == 14 && (first_digit == 3 && second_digit == 6))
+    else if ( (digit_count == 16 || digit_count == 17 || digit_count == 18 || digit_count == 19) && (INNRange(card_number, 3528, 3589)) )
     {
-        type = "DINERS INTL";
+
+        type = "JCB";
+
     }
-    else if ((digit_count == 13 || digit_count == 16) && first_digit == 4)
+    else if ( (digit_count == 16 || digit_count == 17 || digit_count == 18 || digit_count == 19) && (INNRange(card_number, 644, 649)
+                                                                                                        || INNRange(card_number, 62216, 622925)
+                                                                                                        || EXACT(card_number, 6011)
+                                                                                                        || EXACT(card_number, 65)))
+    {
+
+        type = "DISCOVER";
+
+    }
+    else if ( (digit_count == 16 || digit_count == 17 || digit_count == 18 || digit_count == 19) && (INNRange(card_number, 6761, 6763)
+                                                                                                        || EXACT(card_number, 6759)
+                                                                                                        || EXACT(card_number, 6304)
+                                                                                                        || EXACT(card_number, 5893)
+                                                                                                        || EXACT(card_number, 5038)
+                                                                                                        || EXACT(card_number, 5020)
+                                                                                                        || EXACT(card_number, 5018)))
+    {
+
+        type = "MAESTRO";
+
+    }
+    else if (digit_count == 16 && ( EXACT(card_number, 4026) || EXACT(card_number, 417500) || EXACT(card_number, 4508)
+                                    || EXACT(card_number, 4844) || EXACT(card_number, 4913) || EXACT(card_number, 4917)   ))
+    {
+
+        type = "VISA Electron";
+
+    }
+    else if (digit_count == 16 && INNRange(card_number, 637, 639))
+    {
+
+        type = "INSTAPAYMENT";
+
+    }
+    else if ( (digit_count == 13 || digit_count == 16 || digit_count == 19) && EXACT(card_number, 4) )
     {
 
         type = "VISA";
@@ -110,7 +164,9 @@ string card_type(long card_number)
     }
     else
     {
+
         type = "INVALID";
+
 
     }
 
@@ -214,6 +270,35 @@ bool INNRange(long number, long start_range, long end_range)
     return false;
   }
 
+
+}
+
+bool EXACT(long number, long exact)
+{
+
+  long number_digit_count = get_digit_count(number);
+  long exact_digit_count = get_digit_count(exact);
+  long numbers_check[exact_digit_count];
+  long number_check = 0;
+  for(int i = 0; i < exact_digit_count; i++)
+  {
+
+    numbers_check[i] = get_digit_at(i + 1, number);
+    number_check = number_check + numbers_check[i] * ( pow(10, exact_digit_count - i) / 10);
+
+  }
+  if (number_check == exact)
+  {
+
+    return true;
+
+  }
+  else
+  {
+
+    return false;
+
+  }
 
 }
 
