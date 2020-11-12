@@ -123,7 +123,7 @@ string card_type(long card_number)
 
     }
     else if ( (digit_count == 16 || digit_count == 17 || digit_count == 18 || digit_count == 19) && (INNRange(card_number, 644, 649)
-                                                                                                        || INNRange(card_number, 62216, 622925)
+                                                                                                        || INNRange(card_number, 622126, 622925)
                                                                                                         || EXACT(card_number, 6011)
                                                                                                         || EXACT(card_number, 65)))
     {
