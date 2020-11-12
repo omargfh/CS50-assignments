@@ -1,11 +1,15 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 void validate(string content);
 bool card_check(long card_number);
 bool luhn_check(long card_number);
+bool INNRange(long number, long start_range, long end_range);
 long get_digit_count(long number);
 long get_digit_at(long place, long number);
+string card_type(long card_number);
 
 
 int main(void)
@@ -37,37 +41,11 @@ void validate(string content)
 bool card_check(long card_number)
 {
 
-    string type;
     bool checked = true;
-
-    long digit_count = get_digit_count(card_number);
-    long first_digit = get_digit_at(1, card_number);
-    long second_digit = get_digit_at(2, card_number);
-
-    if (digit_count == 15 && (first_digit == 3 && (second_digit == 4 || second_digit == 7)))
+    string type = card_type(card_number);
+    if (!strncmp(type, "INVALID", 7))
     {
-
-        type = "AMEX";
-
-    }
-    else if (digit_count == 16 && (first_digit == 5 && (second_digit == 1 || second_digit == 2 || second_digit == 3
-                                   || second_digit == 4 || second_digit == 5)))
-    {
-
-        type = "MASTERCARD";
-
-    }
-    else if ((digit_count == 13 || digit_count == 16) && first_digit == 4)
-    {
-
-        type = "VISA";
-
-    }
-    else
-    {
-        type = "INVALID";
         checked = false;
-
     }
 
     bool valid = checked;
@@ -96,6 +74,47 @@ bool card_check(long card_number)
     }
 
     return valid;
+
+}
+
+string card_type(long card_number)
+{
+    string type;
+
+    long digit_count = get_digit_count(card_number);
+    long first_digit = get_digit_at(1, card_number);
+    long second_digit = get_digit_at(2, card_number);
+
+    if (digit_count == 15 && (first_digit == 3 && (second_digit == 4 || second_digit == 7)))
+    {
+
+        type = "AMEX";
+
+    }
+    else if (digit_count == 16 && ((first_digit == 5 && (second_digit == 1 || second_digit == 2 || second_digit == 3
+                                   || second_digit == 4 || second_digit == 5)) || INNRange(card_number, 222100, 272099)))
+    {
+
+        type = "MASTERCARD";
+
+    }
+    else if (digit_count == 14 && (first_digit == 3 && second_digit == 6))
+    {
+        type = "DINERS INTL";
+    }
+    else if ((digit_count == 13 || digit_count == 16) && first_digit == 4)
+    {
+
+        type = "VISA";
+
+    }
+    else
+    {
+        type = "INVALID";
+
+    }
+
+    return type;
 
 }
 
@@ -168,6 +187,33 @@ bool luhn_check(long card_number)
         return false;
 
     }
+
+}
+
+bool INNRange(long number, long start_range, long end_range)
+{
+
+  long number_digit_count = get_digit_count(number);
+  long range_digit_count = (get_digit_count(start_range) == get_digit_count(end_range))
+                        ? get_digit_count(start_range) : 0;
+  long numbers_check[range_digit_count];
+  long number_check = 0;
+  for(int i = 0; i < range_digit_count; i++)
+  {
+    numbers_check[i] = get_digit_at(i + 1, number);
+    number_check = number_check + numbers_check[i] * ( pow(10, range_digit_count - i) / 10 );
+  }
+  if (number_check >= start_range && number_check <= end_range)
+  {
+
+    return true;
+
+  }
+  else
+  {
+    return false;
+  }
+
 
 }
 
