@@ -1,11 +1,11 @@
 #include <cs50.h>
 #include <stdio.h>
 
-long validate(string content);
+void validate(string content);
 bool card_check(long card_number);
 bool luhn_check(long card_number);
 long get_digit_count(long number);
-long get_digit_at(long place, long number, long digit_count);
+long get_digit_at(long place, long number);
 
 
 int main(void)
@@ -17,7 +17,7 @@ int main(void)
 }
 
 // calls for a valid card number
-long validate(string content)
+void validate(string content)
 {
 
     long card_number;
@@ -30,7 +30,6 @@ long validate(string content)
 
     }
     while (!is_valid && card_number < 1);
-    return card_number;
 
 }
 
@@ -42,31 +41,31 @@ bool card_check(long card_number)
     bool checked = true;
 
     long digit_count = get_digit_count(card_number);
-    long first_digit = get_digit_at(1, card_number, digit_count);
-    long second_digit = get_digit_at(2, card_number, digit_count);
+    long first_digit = get_digit_at(1, card_number);
+    long second_digit = get_digit_at(2, card_number);
 
     if (digit_count == 15 && (first_digit == 3 && (second_digit == 4 || second_digit == 7)))
     {
 
-        type = "AMEX\n";
+        type = "AMEX";
 
     }
     else if (digit_count == 16 && (first_digit == 5 && (second_digit == 1 || second_digit == 2 || second_digit == 3
                                    || second_digit == 4 || second_digit == 5)))
     {
 
-        type = "MASTERCARD\n";
+        type = "MASTERCARD";
 
     }
     else if ((digit_count == 13 || digit_count == 16) && first_digit == 4)
     {
 
-        type = "VISA\n";
+        type = "VISA";
 
     }
     else
     {
-        type = "INVALID\n";
+        type = "INVALID";
         checked = false;
 
     }
@@ -88,7 +87,7 @@ bool card_check(long card_number)
     if (valid)
     {
 
-        printf("%s", type);
+        printf("%s\n", type);
 
     }
     else
@@ -110,7 +109,7 @@ bool luhn_check(long card_number)
     for (int i = 0; i < digit_count; i++)
     {
 
-        digits[i] = get_digit_at(i + 1, card_number, digit_count);
+        digits[i] = get_digit_at(i + 1, card_number);
         // printf("Digit %ld\n", digits[i]);
 
     }
@@ -198,10 +197,10 @@ long get_digit_count(long number)
 }
 
 // returns a digit at a certain placement (1 for first, 2 for second, etc...)
-long get_digit_at(long place, long number, long digit_count)
+long get_digit_at(long place, long number)
 {
 
-    digit_count = digit_count - place;
+    long digit_count = get_digit_count(number) - place;
     long multiplier = 1;
     while (digit_count > 0)
     {
