@@ -110,7 +110,6 @@ bool luhn_check(long card_number)
     {
 
         digits[i] = get_digit_at(i + 1, card_number);
-        // printf("Digit %ld\n", digits[i]);
 
     }
 
@@ -122,7 +121,6 @@ bool luhn_check(long card_number)
     {
 
         manipulated_digits[i] = digits[digit_count - 2 - (i * 2)] * 2;
-        // printf("Manipulated Digit %ld\n", manipulated_digits[i]);
 
     }
 
@@ -138,14 +136,12 @@ bool luhn_check(long card_number)
         {
 
             first_half += manipulated_digits[i];
-            // printf("First half A %ld\n", first_half);
 
         }
         else
         {
 
             first_half = first_half + (manipulated_digits[i] / 10 % 10) + (manipulated_digits[i] % 10);
-            // printf("First half B %ld\n", first_half);
 
         }
 
@@ -155,24 +151,20 @@ bool luhn_check(long card_number)
     for (int i = 0; i < manipulated_sec_digits_count; i++)
     {
         second_half = second_half + digits[digit_count - 1 - (i * 2)];
-        // printf("Second half %ld\n", second_half);
     }
 
-    // printf("first %ld\n second %ld\n", first_half, second_half);
     final = first_half + second_half;
 
     // check if the last digit in the Luhn's algoritihim result is a zero
     if (final % 10 == 0)
     {
 
-        // printf("true\n");
         return true;
 
     }
     else
     {
 
-        // printf("false\n");
         return false;
 
     }
