@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
                 if (status > 0)
                 {
                     n_img++;
-                    n_img < 10 ? sprintf(img_name, "00%d.jpeg", n_img) : sprintf(img_name, "0%d.jpeg", n_img);
+                    n_img < 10 ? sprintf(img_name, "00%d.jpg", n_img) : sprintf(img_name, "0%d.jpg", n_img);
                     fclose(img);
                     img = fopen(img_name, "a");
                 }
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         {
             if (status != 0)
             {
-              fwrite(image[i], 1, 512, img);
+                fwrite(image[i], 1, 512, img);
             }
         }
         fclose(img);
